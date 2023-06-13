@@ -9,8 +9,46 @@
 
 void usage()
 {
-  const char *usage_str = "\
-Defining usage for the DFA simulator"
+  const char *usage_str = "\n\
+Note to self: this is the usage message that Prof. Seetharaman\
+used in the initial assignment paper.\n\n\
+./dfa-h -d <dfafile> -v\n\n\
+This is a simple DFA Implementation. The DFA definition\n\
+is specified via .dfa file; input string is read from stdin.\n\
+In non-verbose mode, print ACCEPT or NOT ACCEPT as the case may be.\n\n\
+-h\n\
+        print usage\n\
+-d <dfafile>\n\
+        DFA definition file\n\
+-v\n\
+        verbose mode; display machine definition, transitions etc.\n\n\
+Example:\n\
+./dfa -d m1.dfa\n\
+Example dfa definition file m1.dfa\n\n\
+# DFA M1 from Page 36 of ITC Text;\n\
+states: q1 q2 q3\n\
+alphabet: 0 1\n\
+startstate: q1\n\
+finalstate: q2\n\
+transition: q1 0 q1\n\
+transition: q1 1 q2\n\
+transition: q2 0 q3\n\
+transition: q2 1 q2\n\
+transition: q3 0 q2\n\
+transition: q3 1 q2\n\n\
+Example run in interactive mode:\n\
+$ ./dfa -d m1.dfa\n\
+00011\n\
+00011 --> ACCEPT\n\
+00100\n\
+00100 --> ACCEPT\n\
+00000\n\
+00000 --> NOT ACCEPT\n\
+00000 --> NOT ACCEPT\n\
+";
+
+  printf("%s\n", usage_str);
+}
 
 int
 main(int argc, char *argv[])
