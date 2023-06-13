@@ -78,5 +78,14 @@ main(int argc, char *argv[])
 	break;
       }
 
+    /* Including from the getopt code provided */
+    printf("dfa_file=%s verbose=%d\n", dfa_file, verbose);
+
+    if (strcmp(dfa_file, "") == 0) {
+      fprintf(stderr, "-d is a required parameter\n");
+      exit(EXIT_FAILURE);
+    }
+
+    exit(EXIT_SUCCESS);
   }
 }
