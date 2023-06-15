@@ -7,6 +7,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/* For my hash map implementation, I relied on Ben Hoyt's
+   blog and associated code for guidance. You can see his
+   implementation at benhoyt.com/writings/hash-table-in-c/.
+
+   See hm.h for functions and structs 
+ */
+
+#include <hm.h>
+
+
+/* usage - prints instructions to screen */
+
 void usage()
 {
   const char *usage_str = "\n\
@@ -49,6 +61,8 @@ $ ./dfa -d m1.dfa\n\
 
   printf("%s\n", usage_str);
 }
+
+
 
 int
 main(int argc, char *argv[])
