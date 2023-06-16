@@ -14,7 +14,7 @@
    See hm.h for functions and structs 
  */
 
-#include <hm.h>
+#include "hm.h"
 
 
 /* usage - prints instructions to screen */
@@ -72,7 +72,7 @@ main(int argc, char *argv[])
   char dfa_file[512];
   strcpy(dfa_file, "");
 
-  while((c = getopt(argc, argv, "d:hv")) != -1) {
+  while((c = getopt(argc, argv, "hd:v")) != -1) {
     switch(c)
       {
       case 'd':
@@ -89,17 +89,16 @@ main(int argc, char *argv[])
 	break;
       default:
 	usage();
-	break;
       }
-
-    /* Including from the getopt code provided */
-    printf("dfa_file=%s verbose=%d\n", dfa_file, verbose);
-
-    if (strcmp(dfa_file, "") == 0) {
-      fprintf(stderr, "-d is a required parameter\n");
-      exit(EXIT_FAILURE);
-    }
-
-    exit(EXIT_SUCCESS);
   }
+  
+  /* Including from the getopt code provided */
+  printf("dfa_file=%s verbose=%d\n", dfa_file, vflag);
+
+  if (strcmp(dfa_file, "") == 0) {
+    fprintf(stderr, "-d is a required parameter\n");
+    exit(EXIT_FAILURE);
+  }
+
+  exit(EXIT_SUCCESS);
 }

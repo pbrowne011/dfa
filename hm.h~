@@ -22,7 +22,7 @@ typedef struct hm hm;
 
 hm *hm_create(void);
 
-void *hm_destroy(hm *map);
+hm *hm_destroy(hm *map);
 
 void *hm_get(hm *map, const char *key);
 
