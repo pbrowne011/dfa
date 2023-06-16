@@ -129,8 +129,7 @@ main(int argc, char *argv[])
     char **alphabet;
     char *startstate;
     char **finalstates;
-    // hm transition_map;
-    // for later..
+    hm *transition_map = hm_create();
 
     states = malloc(sizeof(char *) * SPACE_SIZE);
     alphabet = malloc(sizeof(char *) * SPACE_SIZE);
@@ -194,11 +193,23 @@ main(int argc, char *argv[])
 	}
       else if (strcmp(line, "transition:") == 0)
 	{
-	  line = strtok(NULL, " ");
-	  while (line != NULL) {
-	    printf("%sTRSTN", line);
-	    line = strtok(NULL, " ");
-	  }
+	  /* We are expecting three entries here. We add the first and the
+	     second together (e.g., "q1 1"), and assign that as the key.
+	     We then assign the third value (e.g., "q3") as the value.
+	   */
+
+	  char *key_1;
+	  char *key_2;
+	  char *value;
+	  
+	  key_1 = strtok(NULL, " ");
+	  key_2 = strtok(NULL, " ");
+	  char *key = malloc(sizeof(char) * (strlen(key_1) + strlen(key_2) + 1));
+	  
+	  strcpy(key, key_1);
+	  strcat(key, key_2);
+	  rm_newline(value = strtok(NULL, " "));
+	  hm_set(transition_map, key, value);
 	}
       else if (strcmp(line, "#") == 0)
 	{
@@ -210,14 +221,8 @@ main(int argc, char *argv[])
 	  exit(EXIT_FAILURE);
 	}
     }
-
-    printf("States 1: %d\n", states[0]);
-    printf("Index: %d\n", state_idx);
     
     fclose(file);
-    for (int i = 0; i < sizeof(states); i++){
-      printf("%s\n", states[i]);
-    }
 
     free(states);
     free(alphabet);
