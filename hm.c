@@ -24,7 +24,7 @@ struct hm {
   size_t length;
 };
 
-#define INITIAL_CAPACITY 32;
+#define INITIAL_CAPACITY 64;
 
 hm *hm_create(void)
 {

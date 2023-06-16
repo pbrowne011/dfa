@@ -62,6 +62,24 @@ $ ./dfa -d m1.dfa\n\
   printf("%s\n", usage_str);
 }
 
+/* Here, we define a function read_input() to read in a
+   .dfa file as input and store in different data structures.
+   
+ */
+
+void
+rm_newline(char *line) {
+  for (int i = 0, j; line[i] != '\0'; ++i) {
+      while (line[i] == '\n') {
+
+         for (j = i; line[j] != '\0'; ++j) {
+	   line[j] = line[j + 1];
+         }
+
+         line[j] = '\0';
+      }
+  }
+}
 
 
 int
@@ -98,7 +116,113 @@ main(int argc, char *argv[])
   if (strcmp(dfa_file, "") == 0) {
     fprintf(stderr, "-d is a required parameter\n");
     exit(EXIT_FAILURE);
-  }
+  } else {
+    // Read input from the .dfa file
+    int buff_size = 1024;
+    char buff[buff_size];
+    char *line;
 
-  exit(EXIT_SUCCESS);
+    // Define the DFA
+    #define SPACE_SIZE 128
+    
+    char **states;
+    char **alphabet;
+    char *startstate;
+    char **finalstates;
+    // hm transition_map;
+    // for later..
+
+    states = malloc(sizeof(char *) * SPACE_SIZE);
+    alphabet = malloc(sizeof(char *) * SPACE_SIZE);
+    finalstates = malloc(sizeof(char *) * SPACE_SIZE);
+    
+    int state_idx = 0;
+    int alpha_idx = 0;
+    int final_idx = 0;
+    
+    FILE *file = fopen(dfa_file, "r");
+    while(fgets(buff, buff_size, file) != NULL) {
+      line = strtok(buff, " ");
+
+      // Cases for each possible first line of .dfa
+      if (strcmp(line, "states:") == 0)
+	{
+	  line = strtok(NULL, " ");
+	  while (line != NULL) {
+	    rm_newline(line);
+	    states[state_idx] = malloc(sizeof(char) * strlen(line));
+	    strcpy(states[state_idx], line);
+	    printf("%s", states[state_idx]);
+	    state_idx++;
+	    
+	    line = strtok(NULL, " ");
+	  }
+	}
+      else if (strcmp(line, "alphabet:") == 0)
+	{
+	  line = strtok(NULL, " ");
+	  while (line != NULL) {
+	    rm_newline(line);
+	    alphabet[alpha_idx] = malloc(sizeof(char) * strlen(line));
+	    strcpy(alphabet[alpha_idx], line);
+	    alpha_idx++;
+	    
+	    line = strtok(NULL, " ");
+	  }
+	}
+      else if (strcmp(line, "startstate:") == 0)
+	{
+	  line = strtok(NULL, " ");
+	  while (line != NULL) {
+	    rm_newline(line);
+	    startstate = line;
+
+	    line = strtok(NULL, " ");
+	  }
+	}
+      else if (strcmp(line, "finalstate:") == 0)
+	{
+	  line = strtok(NULL, " ");
+	  while (line != NULL) {
+	    rm_newline(line);
+	    finalstates[final_idx] = malloc(sizeof(char) * strlen(line));
+	    strcpy(finalstates[final_idx], line);
+	    final_idx++;
+	    
+	    line = strtok(NULL, " ");
+	  }
+	}
+      else if (strcmp(line, "transition:") == 0)
+	{
+	  line = strtok(NULL, " ");
+	  while (line != NULL) {
+	    printf("%sTRSTN", line);
+	    line = strtok(NULL, " ");
+	  }
+	}
+      else if (strcmp(line, "#") == 0)
+	{
+	  continue;
+	}
+      else
+	{
+	  printf("Error in your input file, exiting program");
+	  exit(EXIT_FAILURE);
+	}
+    }
+
+    printf("States 1: %d\n", states[0]);
+    printf("Index: %d\n", state_idx);
+    
+    fclose(file);
+    for (int i = 0; i < sizeof(states); i++){
+      printf("%s\n", states[i]);
+    }
+
+    free(states);
+    free(alphabet);
+    free(finalstates);
+    
+    exit(EXIT_SUCCESS);
+  }
 }
