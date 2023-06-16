@@ -1,10 +1,10 @@
 # DFA
 
 To-do list for project:
-- [ ] -h command line argument (usage)
-- [ ] Define .dfa file type
+- [x] -h command line argument (usage)
+- [x] Define .dfa file type
 - [ ] Read input string from stdin
-- [ ] Create data structure to represent state machine (hash table)
+- [x] Create data structure to represent state machine (hash table)
 - [ ] Output result
 - [ ] -v command line argument (verbose)
 - [ ] Error checking
