@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -81,14 +82,35 @@ rm_newline(char *line) {
   }
 }
 
+/* Define verbose printing functions depending
+   on user input
+   
+ */
+int vflag = 0;
+
+int quietprint(const char *format, ...) {
+  return 0;
+}
+
+int verboseprint(const char *format, ...) {
+  va_list arg;
+   int done;
+
+   va_start (arg, format);
+   done = vfprintf (stdout, format, arg);
+   va_end (arg);
+
+   return done;
+}
+
+int (*fx[2])(const char *, ...) = {quietprint, verboseprint};
 
 int
 main(int argc, char *argv[])
 {
   int c = 0;
-  int vflag = 0;
   char dfa_file[512];
-  strcpy(dfa_file, "");
+  strcpy(dfa_file, "");    
 
   while((c = getopt(argc, argv, "hd:v")) != -1) {
     switch(c)
@@ -127,13 +149,14 @@ main(int argc, char *argv[])
     
     char **states;
     char **alphabet;
-    char *startstate;
-    char **finalstates;
+    char *start_state;
+    char **final_states;
     hm *transition_map = hm_create();
 
     states = malloc(sizeof(char *) * SPACE_SIZE);
     alphabet = malloc(sizeof(char *) * SPACE_SIZE);
-    finalstates = malloc(sizeof(char *) * SPACE_SIZE);
+    start_state = malloc(sizeof(char) * SPACE_SIZE);
+    final_states = malloc(sizeof(char *) * SPACE_SIZE);
     
     int state_idx = 0;
     int alpha_idx = 0;
@@ -151,7 +174,6 @@ main(int argc, char *argv[])
 	    rm_newline(line);
 	    states[state_idx] = malloc(sizeof(char) * strlen(line));
 	    strcpy(states[state_idx], line);
-	    printf("%s", states[state_idx]);
 	    state_idx++;
 	    
 	    line = strtok(NULL, " ");
@@ -172,20 +194,16 @@ main(int argc, char *argv[])
       else if (strcmp(line, "startstate:") == 0)
 	{
 	  line = strtok(NULL, " ");
-	  while (line != NULL) {
-	    rm_newline(line);
-	    startstate = line;
-
-	    line = strtok(NULL, " ");
-	  }
+	  rm_newline(line);
+	  strcpy(start_state, line);
 	}
       else if (strcmp(line, "finalstate:") == 0)
 	{
 	  line = strtok(NULL, " ");
 	  while (line != NULL) {
 	    rm_newline(line);
-	    finalstates[final_idx] = malloc(sizeof(char) * strlen(line));
-	    strcpy(finalstates[final_idx], line);
+	    final_states[final_idx] = malloc(sizeof(char) * strlen(line));
+	    strcpy(final_states[final_idx], line);
 	    final_idx++;
 	    
 	    line = strtok(NULL, " ");
@@ -197,18 +215,27 @@ main(int argc, char *argv[])
 	     second together (e.g., "q1 1"), and assign that as the key.
 	     We then assign the third value (e.g., "q3") as the value.
 	   */
-
 	  char *key_1;
 	  char *key_2;
-	  char *value;
 	  
 	  key_1 = strtok(NULL, " ");
 	  key_2 = strtok(NULL, " ");
 	  char *key = malloc(sizeof(char) * (strlen(key_1) + strlen(key_2) + 1));
+	  char *value = malloc(sizeof(char) * (strlen(key_1) + 1));
 	  
 	  strcpy(key, key_1);
 	  strcat(key, key_2);
-	  rm_newline(value = strtok(NULL, " "));
+
+	  /* Note to self: draw memory diagrams soon to understand why you need to
+	     create a val_temp pointer and then copy to value, rather than just
+	     assigning the next string to value. Is it because value is still
+	     pointing to the previous value??
+	   */
+	  
+	  char *val_temp = strtok(NULL, " ");
+	  strcpy(value, val_temp);
+	  rm_newline(value);
+	  
 	  hm_set(transition_map, key, value);
 	}
       else if (strcmp(line, "#") == 0)
@@ -224,9 +251,43 @@ main(int argc, char *argv[])
     
     fclose(file);
 
+    /* Take user input, then apply transitions */
+    while (1) {
+      int accepted = 0;
+      
+      char user_input[SPACE_SIZE];
+      scanf("%s", user_input);
+    
+      char *curr_state = malloc(sizeof(char) * (strlen(start_state) + 1));
+      strcpy(curr_state, start_state);
+
+      for (int i = 0; i < strlen(user_input); i++) {
+        char user_str[2] = {user_input[i], '\0'};
+        strcat(curr_state, user_str);
+
+        char *temp = (char *)hm_get(transition_map, curr_state);
+        strcpy(curr_state, temp);
+      }
+    
+      for (int j = 0; j < SPACE_SIZE; j++) {
+        if (final_states[j] != NULL && strcmp(curr_state, final_states[j]) == 0) {
+	  accepted = 1;
+	  break;
+        }
+      }
+
+      if (accepted == 1) {
+        printf("%s --> ACCEPTED\n", user_input);
+      } else {
+        printf("%s --> REJECTED\n", user_input);
+      }
+
+      fx[vflag]("Verbose printing enabled");
+      
+    }
     free(states);
     free(alphabet);
-    free(finalstates);
+    free(final_states);
     
     exit(EXIT_SUCCESS);
   }

@@ -129,6 +129,7 @@ hm_set_entry(hm_entry *entries, size_t capacity,
   // Update map
   entries[index].key = (char *)key;
   entries[index].value = value;
+
   return key;
 }
 
@@ -139,7 +140,7 @@ hm_set(hm *map, const char *key, void *value) {
   if (value == NULL) {
     return NULL;
   }
-
+  
   return hm_set_entry(map->entries, map->capacity, key, value,
 		      &map->length);
 }
