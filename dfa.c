@@ -250,7 +250,44 @@ main(int argc, char *argv[])
     }
     
     fclose(file);
+    
+    /* If verbose mode is enabled, print DFA definition */
+    fx[vflag]("--- BEGIN DFA Definition ---\nStates:\n   ");
+    for (int i = 0; i < state_idx; i++) {
+      fx[vflag]("%s ", states[i]);
+    }	
 
+    fx[vflag]("\nAlphabet:\n   ");
+    for (int i = 0; i < alpha_idx; i++) {
+      fx[vflag]("%s ", alphabet[i]);
+    }
+
+    fx[vflag]("\nStart State: %s\n", start_state);
+    fx[vflag]("Final State(s): ");
+    for (int i = 0; i < final_idx; i++) {
+      fx[vflag]("%s ", final_states[i]);
+    }
+    
+    fx[vflag]("\nTransitions\n");
+    for (int i = 0; i < state_idx; i++) {
+      if (states[i]) {
+	for (int j = 0; j < alpha_idx; j++) {
+	  if (alphabet[j]) {
+	    char *key_1 = states[i];
+	    char *key_2 = alphabet[j];
+	    
+	    char *key = malloc(sizeof(char) * (strlen(key_1) + strlen(key_2) + 1));
+	    strcpy(key, key_1);
+	    strcat(key, key_2);
+ 
+	    fx[vflag]("   %s %s %s\n", states[i], alphabet[j],
+		      hm_get(transition_map, key));
+	  }
+	}
+      }
+    }
+    fx[vflag]("--- END DFA Definition ---\n\n");
+    
     /* Take user input, then apply transitions */
     while (1) {
       int accepted = 0;
@@ -262,11 +299,14 @@ main(int argc, char *argv[])
       strcpy(curr_state, start_state);
 
       for (int i = 0; i < strlen(user_input); i++) {
+	fx[vflag]("Current state: %s   ", curr_state);
         char user_str[2] = {user_input[i], '\0'};
-        strcat(curr_state, user_str);
+	fx[vflag]("Symbol: %s ", user_str);
+	strcat(curr_state, user_str);
 
         char *temp = (char *)hm_get(transition_map, curr_state);
         strcpy(curr_state, temp);
+	fx[vflag]("--> New state: %s\n", curr_state);
       }
     
       for (int j = 0; j < SPACE_SIZE; j++) {
@@ -281,8 +321,6 @@ main(int argc, char *argv[])
       } else {
         printf("%s --> REJECTED\n", user_input);
       }
-
-      fx[vflag]("Verbose printing enabled");
       
     }
     free(states);
