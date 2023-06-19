@@ -1,0 +1,42 @@
+# DFA for regular expression a*.c
+# Note that the alphabet is only
+# seven characters
+states: q1 q2 q3 q4 q5
+alphabet: a b c x y z .
+startstate: q1
+finalstate: q4
+transition: q1 a q2
+transition: q1 b q5
+transition: q1 c q5
+transition: q1 x q5
+transition: q1 y q5
+transition: q1 z q5
+transition: q1 . q5
+transition: q2 a q2
+transition: q2 b q2
+transition: q2 c q2
+transition: q2 x q2
+transition: q2 y q2
+transition: q2 z q2
+transition: q2 . q3
+transition: q3 a q2
+transition: q3 b q2
+transition: q3 c q4
+transition: q3 x q2
+transition: q3 y q2
+transition: q3 z q2
+transition: q3 . q2
+transition: q4 a q5
+transition: q4 b q5
+transition: q4 c q5
+transition: q4 x q5
+transition: q4 y q5
+transition: q4 z q5
+transition: q4 . q5
+transition: q5 a q5
+transition: q5 b q5
+transition: q5 c q5
+transition: q5 x q5
+transition: q5 y q5
+transition: q5 z q5
+transition: q5 . q5
