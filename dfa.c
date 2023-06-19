@@ -304,7 +304,19 @@ main(int argc, char *argv[])
 	fx[vflag]("Symbol: %s ", user_str);
 	strcat(curr_state, user_str);
 
-        char *temp = (char *)hm_get(transition_map, curr_state);
+	int isalpha = 0;
+	for (int i = 0; i < alpha_idx; i++) {
+	  if (strcmp(user_str, alphabet[i]) == 0) {
+	    isalpha = 1;
+	  }
+	}
+
+	if (!isalpha) {
+	  printf("%s is not a valid symbol, please try again.\n", user_str);
+	  break;
+	}
+
+	char *temp = (char *)hm_get(transition_map, curr_state);
         strcpy(curr_state, temp);
 	fx[vflag]("--> New state: %s\n", curr_state);
       }

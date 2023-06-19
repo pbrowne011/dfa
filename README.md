@@ -7,10 +7,4 @@ To-do list for project:
 - [x] Create data structure to represent state machine (hash table)
 - [x] Output result
 - [x] -v command line argument (verbose)
-- [ ] Error checking
-
-Finish the first section by Friday
-
-Extra credit (weekend)
-- [ ] Add NFA optionality
-- [ ] Add JSON support
+- [x] Error checking
