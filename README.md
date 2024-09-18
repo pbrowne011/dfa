@@ -8,3 +8,15 @@ To-do list for project:
 - [x] Output result
 - [x] -v command line argument (verbose)
 - [x] Error checking
+
+---
+
+New TODOs
+  * [ ] Add NFA mode
+  * [ ] Rewrite DFA mode using branch table for state machine
+  * [ ] Update README
+  * [ ] Convert NFA into equivalent DFA using input files
+  * [ ] Write out TCP as a DFA (for resources, use
+        http://www.tcpipguide.com/free/ and
+        https://texample.net//tikz/examples/tcp-state-machine/
+  * [ ] Merge two DFAs together
